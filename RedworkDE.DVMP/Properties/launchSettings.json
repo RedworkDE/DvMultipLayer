@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "DerailValley": {
+      "commandName": "Executable",
+      "executablePath": "C:\\DerailValley\\DerailValley.exe",
+      "commandLineArgs": "-nonvr"
+    }
+  }
+}

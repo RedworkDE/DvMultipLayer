@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Basic Settings -->
+    <TargetFramework>net46</TargetFramework>
+    <Platforms>x64</Platforms>
+    <Configurations>Debug_BepInEx;Debug_UMM;Release_BepInEx;Release_UMM</Configurations>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <OutputType>Library</OutputType>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <DisableImplicitFrameworkReferences>True</DisableImplicitFrameworkReferences>
+    <GameDirectory Condition="'$(GameDirectory)'==''">C:\DerailValley\</GameDirectory>
+    <FrameworkPathOverride>$(GameDirectory)DerailValley_Data\Managed\</FrameworkPathOverride>
+    
+    <Authors>RedworkDE</Authors>
+    <Copyright>(c) 2020 RedworDE</Copyright>
+    <Version>0.1.0</Version>
+
+    <!-- Configuration Switches -->
+    <_IsDebug>False</_IsDebug>
+    <_IsDebug Condition="$(Configuration.Contains('Debug'))">True</_IsDebug>
+    <_IsPublish>False</_IsPublish>
+    <_IsPublish Condition="$(Configuration.Contains('Release'))">True</_IsPublish>
+    <_IsBepInEx>False</_IsBepInEx>
+    <_IsBepInEx Condition="$(Configuration.Contains('BepInEx'))">True</_IsBepInEx>
+    <_IsUMM>False</_IsUMM>
+    <_IsUMM Condition="$(Configuration.Contains('UMM'))">True</_IsUMM>
+
+    <!-- Configuration dependant settings -->
+    <DefineConstants Condition="$(_IsDebug)">$(DefineConstants);DEBUG;TRACE</DefineConstants>
+    <DefineConstants Condition="$(_IsPublish)">$(DefineConstants);DEBUG;TRACE</DefineConstants>
+    <DefineConstants Condition="$(_IsBepInEx)">$(DefineConstants);BepInEx</DefineConstants>
+    <DefineConstants Condition="$(_IsUMM)">$(DefineConstants);UMM</DefineConstants>
+    
+    <Optimize Condition="$(_IsDebug)">False</Optimize>
+    <Optimize Condition="$(_IsPublish)">True</Optimize>
+
+    <BaseOutputDirectory Condition="$(_IsDebug)">$(GameDirectory)</BaseOutputDirectory>
+    <BaseOutputDirectory Condition="$(_IsPublish)">$(GameDirectory)</BaseOutputDirectory>
+
+  </PropertyGroup>
+
+  <!-- Mod loaders, most provide an entry point and harmony -->
+  <Choose>
+    <When Condition="$(_IsBepInEx)">
+      <PropertyGroup>
+        <OutputPath>$(BaseOutputDirectory)BepInEx\plugins\$(MSBuildProjectName)</OutputPath>
+      </PropertyGroup>
+      <ItemGroup>
+        <Reference Include="$(GameDirectory)BepInEx\core\BepInEx.dll" Private="False"/>
+        <Reference Include="$(GameDirectory)BepInEx\core\BepInEx.Harmony.dll" Private="False"/>
+        <Reference Include="$(GameDirectory)BepInEx\core\0Harmony.dll" Private="False"/>
+        <None Remove="Info.json" />
+      </ItemGroup>
+    </When>
+    <When Condition="$(_IsUMM)">
+      <!-- todo: check UMMs harmony version and loggin facilities -->
+      <PropertyGroup>
+        <OutputPath>$(BaseOutputDirectory)Mods\$(MSBuildProjectName)</OutputPath>
+      </PropertyGroup>
+      <ItemGroup>
+        <Reference Include="UnityModManager">
+          <HintPath>$(GameDirectory)DerailValley_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
+        </Reference>
+        <Reference Include="0Harmony">
+          <HintPath>$(GameDirectory)DerailValley_Data\Managed\UnityModManager\0Harmony-1.2.dll</HintPath>
+        </Reference>
+        <None Update="Info.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <_ModLoaderError>True</_ModLoaderError>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="6.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="InfoOf.Fody" Version="1.6.1" PrivateAssets="All" />
+    <PackageReference Include="RedworkDE.Publicizer" Version="0.1.0" />
+    <WeaverFiles Include="..\RedworkDE.DVMP.Weavers\bin\Debug\netstandard2.0\RedworkDE.DVMP.Weavers.dll" WeaverClassNames="PacketWeaver"></WeaverFiles>
+  </ItemGroup>
+
+  <!-- add one entry for each assembly where access to private members is required -->
+  <ItemGroup>
+    <PublicizeAssemblies Include="Assembly-CSharp" Private="True" Readonly="True" />
+  </ItemGroup>
+
+  <!-- Delete Fody.InfoOf helper, since the package doesn't clean it up -->
+  <Target Name="RemoveFodyHelperAssemblies" AfterTargets="PostBuildEvent">
+    <Delete Files="$(OutputPath)InfoOf.dll" />
+  </Target>
+
+
+  <ItemGroup>
+    <!-- Derail Valleys DLL to reference, everything that cant be referenced here must be copied to the build output -->
+    <Reference Include="Assembly-CSharp" />
+    <Reference Include="BezierCurves" />
+    <Reference Include="DV.BrakeSystem" />
+    <Reference Include="DV.Interaction" />
+    <Reference Include="DV.TerrainSystem" />
+    <Reference Include="DV.Utils" />
+    <Reference Include="Newtonsoft.Json" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe" />
+    <Reference Include="Unity.TextMeshPro" />
+    <Reference Include="UnityEngine" />
+    <Reference Include="UnityEngine.AssetBundleModule" />
+    <Reference Include="UnityEngine.AudioModule" />
+    <Reference Include="UnityEngine.CoreModule" />
+    <Reference Include="UnityEngine.ImageConversionModule" />
+    <Reference Include="UnityEngine.IMGUIModule" />
+    <Reference Include="UnityEngine.PhysicsModule" />
+    <Reference Include="UnityEngine.ScreenCaptureModule" />
+    <Reference Include="UnityEngine.StreamingModule" />
+    <Reference Include="UnityEngine.TerrainModule" />
+    <Reference Include="UnityEngine.TextRenderingModule" />
+    <Reference Include="UnityEngine.UI" />
+    <Reference Include="UnityEngine.UIModule" />
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule" />
+    <Reference Include="UnityEngine.UnityWebRequestModule" />
+  </ItemGroup>
+
+  <!-- Steamwork lib and copy native files to correct place -->
+  <ItemGroup>
+    <Reference Include="Steamworks/Steamworks.NET.dll"/>
+    <SteamApiFiles Include="Steamworks/steam_api64.dll"/>
+    <SteamApiFiles Include="Steamworks/steam_appid.txt"/>
+  </ItemGroup>
+  <Target Name="CopySteamApiDll" BeforeTargets="PostBuildEvent">
+    <Copy SourceFiles="@(SteamApiFiles)" DestinationFolder="$(BaseOutputDirectory)"></Copy>
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Error Text="You must define exactly one of the compilation constants 'BepInEx' and 'UMM'" Condition="'$(_ModLoaderError)' != ''" />
+  </Target>
+
+  <Import Project="..\RedworkDE.DVMP.Server.Common\RedworkDE.DVMP.Server.Common.projitems" Label="Shared" />
+
+</Project>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>68b310db-a0e5-4449-b86c-c92ca8c9f51d</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>RedworkDE.DVMP.Server.Common</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CreateUserRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CreateUserResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UserInfo.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,7 @@
+{
+  "Id": "RedworkDE.DVMP",
+  "DisplayName": "DV MultipLayer",
+  "Author": "RedworkDE",
+  "Version": "0.1.0",
+  "EntryMethod": "AutoLoadManager.Load"
+}

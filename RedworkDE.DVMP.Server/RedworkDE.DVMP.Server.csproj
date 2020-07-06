@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <Import Project="..\RedworkDE.DVMP.Server.Common\RedworkDE.DVMP.Server.Common.projitems" Label="Shared" />
+
+</Project>

@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
-using CommandTerminal;
 using RedworkDE.DVMP.Utils;
 
 namespace RedworkDE.DVMP.Networking

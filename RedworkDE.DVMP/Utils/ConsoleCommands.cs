@@ -18,7 +18,9 @@ namespace RedworkDE.DVMP.Utils
 					Terminal.Log(TerminalLogType.Error, "Cannot set authority when already connected");
 					return;
 				}
+#pragma warning disable 618
 				MultiPlayerManager.Instance.HasAuthority = true;
+#pragma warning restore 618
 			});
 			ConsoleCommandHelper.RegisterCommand("mp.listen", new CommandInfo()
 			{

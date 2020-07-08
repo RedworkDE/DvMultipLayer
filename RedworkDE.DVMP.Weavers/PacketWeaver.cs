@@ -32,7 +32,7 @@ namespace RedworkDE.DVMP.Weavers
 		public override void Execute()
 		{
 			WriteInfo(ModuleDefinition.ToString());
-			_iPacket = ModuleDefinition.GetType("DVMP.Networking", "IPacket");
+			_iPacket = ModuleDefinition.GetType("RedworkDE.DVMP.Networking", "IPacket");
 			if (_iPacket is null)
 			{
 				WriteWarning("IPacket not found");
@@ -42,7 +42,7 @@ namespace RedworkDE.DVMP.Weavers
 			_parseData = _iPacket.Methods.SingleOrDefault(m => m.Name == "ParseData");
 			_serializeData = _iPacket.Methods.SingleOrDefault(m => m.Name == "SerializeData");
 			_getMaxSize = _iPacket.Methods.SingleOrDefault(m => m.Name == "get_MaxSize");
-			_autoPacket = ModuleDefinition.GetType("DVMP.Networking", "AutoPacket");
+			_autoPacket = ModuleDefinition.GetType("RedworkDE.DVMP.Networking", "AutoPacket");
 			if (_autoPacket is null)
 			{
 				WriteWarning("AutoPacket not found");
@@ -56,7 +56,7 @@ namespace RedworkDE.DVMP.Weavers
 			}
 			_objectCtor = ModuleDefinition.ImportReference(_autoPacket.BaseType?.Resolve()?.GetConstructors()?.Single());
 
-			_extensions = ModuleDefinition.GetType("DVMP", "Extensions");
+			_extensions = ModuleDefinition.GetType("RedworkDE.DVMP.Utils", "Extensions");
 			_read = _extensions.Methods.Single(m => m.Name == "Read");
 			_readArray = _extensions.Methods.Single(m => m.Name == "ReadArray" && m.Parameters.Count == 2);
 			_readStringA = _extensions.Methods.Single(m => m.Name == "ReadA");

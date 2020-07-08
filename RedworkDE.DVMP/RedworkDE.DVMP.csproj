@@ -94,7 +94,7 @@
 
   <!-- add one entry for each assembly where access to private members is required -->
   <ItemGroup>
-    <PublicizeAssemblies Include="Assembly-CSharp" Private="True" Readonly="True" />
+    <PublicizeAssembly Include="Assembly-CSharp" Private="True" Readonly="True" />
   </ItemGroup>
 
   <!-- Delete Fody.InfoOf helper, since the package doesn't clean it up -->

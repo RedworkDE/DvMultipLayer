@@ -129,6 +129,7 @@ namespace RedworkDE.DVMP
 			else train.gameObject.AddComponent<TrainCarSync>().Init(packet.Id);
 
 			train.logicCar.ID = packet.Name;
+			train.trainPlatesCtrl.trainCarPlates.ForEach(plate => plate.id.text = packet.Name);
 
 			return true;
 		}

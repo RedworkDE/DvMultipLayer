@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using CommandTerminal;
 using RedworkDE.DVMP.Networking;
 using UnityEngine;
@@ -66,8 +67,27 @@ namespace RedworkDE.DVMP.Utils
 
 					}
 
-					if (!NetworkManager.Connect(remote, port)) Terminal.Log(TerminalLogType.Warning, "already connecting");
+					var task = NetworkManager.Connect(remote, port);
+					if (task is null) Terminal.Log(TerminalLogType.Warning, "already connecting");
+					else task.ContinueWith(_ => Terminal.Log(TerminalLogType.Warning, "connected"));
 				},
+			});
+
+			ConsoleCommandHelper.RegisterCommand("mp.host", async args =>
+			{
+				var session = await SessionManager.Instance.HostAsync();
+				Terminal.Log($"session id: " + session.ToString("N"));
+				GUIUtility.systemCopyBuffer = session.ToString("N");
+			});
+			ConsoleCommandHelper.RegisterCommand("mp.join", async args =>
+			{
+				if (!Guid.TryParse(args.Length > 0 ? args[0].String : GUIUtility.systemCopyBuffer, out var session))
+				{
+					Terminal.Log(TerminalLogType.Error, "no session id provided or in system clipboard");
+					return;
+				}
+				await SessionManager.Instance.JoinAsync(session);
+				Terminal.Log($"joined session");
 			});
 
 

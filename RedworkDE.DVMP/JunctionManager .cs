@@ -67,7 +67,7 @@ namespace RedworkDE.DVMP
 
 			var sync = junction.GetComponent<JunctionSync>();
 			if (sync) sync.SetSelected(branch);
-			while (junction.selectedBranch != branch) junction.Switch(Junction.SwitchMode.FORCED);
+			while (junction.selectedBranch != branch) junction.Switch(Junction.SwitchMode.NO_SOUND);
 			return true;
 		}
 	}

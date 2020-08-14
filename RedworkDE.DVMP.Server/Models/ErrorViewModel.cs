@@ -1,5 +1,3 @@
-using System;
-
 namespace RedworkDE.DVMP.Server.Models
 {
 	public class ErrorViewModel

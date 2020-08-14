@@ -9,8 +9,8 @@
     <Import_RootNamespace>RedworkDE.DVMP.Server.Common</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)CreateUserRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CreateUserResponse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UserInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JoinSession.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CreateSession.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CreateUser.cs" />
   </ItemGroup>
 </Project>

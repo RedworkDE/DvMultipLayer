@@ -70,7 +70,7 @@ namespace RedworkDE.DVMP
 		{
 			base.OnDestroy();
 
-			CarSpawner.Instance.DeleteCar(gameObject);
+			CarSpawner.DeleteCar(_car);
 		}
 
 		public override void Update()

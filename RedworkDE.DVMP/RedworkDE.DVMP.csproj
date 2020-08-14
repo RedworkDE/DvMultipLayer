@@ -52,9 +52,9 @@
         <OutputPath>$(BaseOutputDirectory)BepInEx\plugins\$(MSBuildProjectName)</OutputPath>
       </PropertyGroup>
       <ItemGroup>
-        <Reference Include="$(GameDirectory)BepInEx\core\BepInEx.dll" Private="False"/>
-        <Reference Include="$(GameDirectory)BepInEx\core\BepInEx.Harmony.dll" Private="False"/>
-        <Reference Include="$(GameDirectory)BepInEx\core\0Harmony.dll" Private="False"/>
+        <Reference Include="$(GameDirectory)BepInEx\core\BepInEx.dll" Private="False" />
+        <Reference Include="$(GameDirectory)BepInEx\core\BepInEx.Harmony.dll" Private="False" />
+        <Reference Include="$(GameDirectory)BepInEx\core\0Harmony.dll" Private="False" />
         <None Remove="Info.json" />
       </ItemGroup>
     </When>
@@ -83,18 +83,20 @@
   </Choose>
 
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.2.0">
+    <PackageReference Include="Fody" Version="6.2.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="InfoOf.Fody" Version="1.6.1" PrivateAssets="All" />
-    <PackageReference Include="RedworkDE.Publicizer" Version="0.1.0" />
+    <PackageReference Include="InfoOf.Fody" Version="2.0.1" PrivateAssets="All" />
+    <PackageReference Include="Open.Nat" Version="2.1.0" />
+    <PackageReference Include="RedworkDE.Publicizer" Version="0.2.2" />
     <WeaverFiles Include="..\RedworkDE.DVMP.Weavers\bin\Debug\netstandard2.0\RedworkDE.DVMP.Weavers.dll" WeaverClassNames="PacketWeaver"></WeaverFiles>
   </ItemGroup>
 
   <!-- add one entry for each assembly where access to private members is required -->
   <ItemGroup>
     <PublicizeAssembly Include="Assembly-CSharp" Private="True" Readonly="True" />
+    <PublicizeAssembly Include="0Harmony" Private="True" Readonly="True" />
   </ItemGroup>
 
   <!-- Delete Fody.InfoOf helper, since the package doesn't clean it up -->
@@ -136,9 +138,9 @@
 
   <!-- Steamwork lib and copy native files to correct place -->
   <ItemGroup>
-    <Reference Include="Steamworks/Steamworks.NET.dll"/>
-    <SteamApiFiles Include="Steamworks/steam_api64.dll"/>
-    <SteamApiFiles Include="Steamworks/steam_appid.txt"/>
+    <Reference Include="Steamworks/Steamworks.NET.dll" />
+    <SteamApiFiles Include="Steamworks/steam_api64.dll" />
+    <SteamApiFiles Include="Steamworks/steam_appid.txt" />
   </ItemGroup>
   <Target Name="CopySteamApiDll" BeforeTargets="PostBuildEvent">
     <Copy SourceFiles="@(SteamApiFiles)" DestinationFolder="$(BaseOutputDirectory)"></Copy>

@@ -1,0 +1,53 @@
+﻿@model IEnumerable<RedworkDE.DVMP.Server.Data.UserInfo>
+
+@{
+    ViewData["Title"] = "UserList";
+}
+
+<h1>UserList</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HasIpV4)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HasIpV6)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ListenPort)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasIpV4)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasIpV6)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ListenPort)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "UserDetails", new { id = item.UserId }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

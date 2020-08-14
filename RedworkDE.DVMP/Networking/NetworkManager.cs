@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using RedworkDE.DVMP.Utils;
 
 namespace RedworkDE.DVMP.Networking
@@ -28,11 +29,13 @@ namespace RedworkDE.DVMP.Networking
 
 		private const int BUFFER_SIZE = 1 << 20;
 		public static NetworkManager Instance { get; private set; } = null!;
+		public static int ListenPort => ((IPEndPoint?) _listener?.LocalEndpoint)?.Port ?? 0;
 
 		private static TcpListener? _listener;
 		private static IAsyncResult? _acceptListener;
 		private static TcpClient? _client;
 		private static IAsyncResult? _acceptClient;
+		private static TaskCompletionSource<object?>? _connectFinished;
 
 		private static readonly List<ConnectionState> _state = new List<ConnectionState>();
 		private static readonly List<TcpClient> _tcpClients = new List<TcpClient>();
@@ -67,12 +70,12 @@ namespace RedworkDE.DVMP.Networking
 					if (factoryMethod is { })
 					{
 						Logger.LogDebug($"found packet type {type} / Assigned id {PacketType.GetByType(type)}");
-						var factory = (Func<IPacket>)factoryMethod.CreateDelegate(typeof(Func<IPacket>));
+						var factory = (Func<IPacket>) factoryMethod.CreateDelegate(typeof(Func<IPacket>));
 						var packetType = PacketType.GetByType(type);
 						_packetTypes.Add(packetType, factory);
-						var methodInfo = Info.OfMethod<NetworkManager>(nameof(DispatchPacketOuter));
+						var methodInfo = typeof(NetworkManager).GetMethod(nameof(DispatchPacketOuter), BindingFlags.NonPublic | BindingFlags.Static); //Info.OfMethod<NetworkManager>(nameof(DispatchPacketOuter));
 						var makeGenericMethod = methodInfo.MakeGenericMethod(type);
-						var dispatch = (Action<IPacket, int>)makeGenericMethod.CreateDelegate(typeof(Action<IPacket, int>));
+						var dispatch = (Action<IPacket, int>) makeGenericMethod.CreateDelegate(typeof(Action<IPacket, int>));
 						_dispatchers.Add(type, dispatch);
 					}
 					else
@@ -103,15 +106,16 @@ namespace RedworkDE.DVMP.Networking
 			return true;
 		}
 		
-		public static bool Connect(IPAddress remote, int remotePort)
+		public static Task? Connect(IPAddress remote, int remotePort)
 		{
-			if (_client is {}) return false;
+			if (_client is {}) return null;
 
 			MultiPlayerManager.Instance.IsBeforeMultiPlayer = true;
 
 			_client = new TcpClient();
 			_acceptClient = _client.BeginConnect(remote, remotePort, null, null);
-			return true;
+			_connectFinished = new TaskCompletionSource<object?>();
+			return _connectFinished.Task;
 		}
 
 		/// <summary>
@@ -208,11 +212,25 @@ namespace RedworkDE.DVMP.Networking
 
 					if (_acceptClient?.IsCompleted ?? false)
 					{
-						_client!.EndConnect(_acceptClient);
-						AddClient(_client);
+						try
+						{
+							_client!.EndConnect(_acceptClient);
+						}
+						catch (IOException ex)
+						{
+							Logger.LogInfo($"Error while connecting: {ex}");
+							_connectFinished!.SetException(ex);
+							_acceptClient = null;
+							_client = null;
+							_connectFinished = null;
+						}
+
+						AddClient(_client!);
+						_connectFinished!.SetResult(null);
 
 						_acceptClient = null;
 						_client = null;
+						_connectFinished = null;
 					}
 
 					for (int i = 0; i < _tcpClients.Count; i++)

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RedworkDE.DVMP.Server.Data;
 using RedworkDE.DVMP.Server.Models;
 
 namespace RedworkDE.DVMP.Server.Controllers
@@ -32,6 +30,29 @@ namespace RedworkDE.DVMP.Server.Controllers
 		public IActionResult Error()
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+
+		public IActionResult SessionList()
+		{
+			return View(DataContainer.Sessions.Values);
+		}
+
+
+		public IActionResult SessionDetails(Guid id)
+		{
+			if (!DataContainer.Sessions.TryGetValue(id, out var session)) return Error();
+			return View(session);
+		}
+
+		public IActionResult UserList()
+		{
+			return View(DataContainer.Users.Values);
+		}
+
+		public IActionResult UserDetails(Guid id)
+		{
+			if (!DataContainer.Users.TryGetValue(id, out var user)) return Error();
+			return View(user);
 		}
 	}
 }

@@ -6,4 +6,8 @@
 
   <Import Project="..\RedworkDE.DVMP.Server.Common\RedworkDE.DVMP.Server.Common.projitems" Label="Shared" />
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0-preview.6.20323.1" />
+  </ItemGroup>
+
 </Project>

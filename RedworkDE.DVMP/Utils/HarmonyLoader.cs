@@ -30,7 +30,7 @@ namespace RedworkDE.DVMP.Utils
 					
 					var proc = new PatchProcessor(harmony);
 
-					proc.AddOriginal((MethodBase) Info.OfMethod<PatchProcessor>("GetOriginalMethod").Invoke(null, new[] {merged}));
+					proc.AddOriginal(PatchProcessor.GetOriginalMethod(merged) /*(MethodBase) Info.OfMethod<PatchProcessor>("GetOriginalMethod").Invoke(null, new[] {merged})*/);
 
 					if (method.GetCustomAttributes<HarmonyTranspiler>().Any())
 						proc.AddTranspiler(method);
